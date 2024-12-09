@@ -20,6 +20,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       routerConfig: router(context),
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          scaffoldBackgroundColor: Colors.grey[100], fontFamily: "Poppins"),
     );
   }
 }
