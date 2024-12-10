@@ -133,9 +133,11 @@ class _HomeState extends State<Home> {
                                       children: [
                                         Text(
                                           item.name,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -154,7 +156,7 @@ class _HomeState extends State<Home> {
                                         Text(
                                           'Count: ${item.taskCount}',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             color: ColorPallete.primary,
                                           ),
                                         ),

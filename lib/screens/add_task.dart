@@ -97,8 +97,8 @@ class _AddTaskState extends State<AddTask> {
           padding: const EdgeInsets.only(bottom: 100),
           child: Icon(Icons.notes, color: ColorPallete.primary),
         ),
-        contentPadding:
-            const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 15),
+        // contentPadding:
+        //     const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 15),
         filled: true,
         fillColor: Colors.white,
         enabledBorder: OutlineInputBorder(
