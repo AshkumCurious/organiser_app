@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
 import 'package:organiser_app/widgets/note_card.dart';
 
@@ -29,6 +30,12 @@ class _TasksState extends State<Tasks> {
       appBar: AppBar(
         title: const Text('Notes'),
         backgroundColor: ColorPallete.cardbgcolor,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.filter_alt_outlined),
+          ),
+        ],
       ),
       floatingActionButton: Padding(
         padding:
@@ -40,12 +47,13 @@ class _TasksState extends State<Tasks> {
               size: 30,
             ),
             onPressed: () async {
-              _databaseService.addNote(
-                categoryid: 3,
-                title: 'Title 1',
-                description:
-                    'This is a new note that I have created for reference and this is how i can see it in the app',
-              );
+              GoRouter.of(context).push('/tasks/addnote');
+              // _databaseService.addNote(
+              //   categoryid: 3,
+              //   title: 'Title 1',
+              //   description:
+              //       'This is a new note that I have created for reference and this is how i can see it in the app',
+              // );
             }),
       ),
       body: SafeArea(

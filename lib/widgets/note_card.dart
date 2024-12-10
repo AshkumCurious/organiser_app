@@ -37,33 +37,32 @@ class NotesCard extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: ColorPallete.primary,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Icon(
-                  categoryIcons[type - 1],
-                  size: 35,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Icon(Icons.menu, color: Colors.black54),
+                      ],
                     ),
                     Text(
                       description,
-                      maxLines: 2,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 14,
@@ -72,8 +71,20 @@ class NotesCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: ColorPallete.primary,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Icon(
+                            categoryIcons[type - 1],
+                            color: Colors.white,
+                          ),
+                        ),
                         Text(
                           formatDateTime(dateTime),
                           style: const TextStyle(
