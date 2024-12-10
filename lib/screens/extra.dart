@@ -10,12 +10,9 @@ class Extra extends StatefulWidget {
 class _ExtraState extends State<Extra> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Extra'),
-      ),
-      body: const Center(
-        child: Text('Extra'),
+    return const Scaffold(
+      body: Center(
+        child: Text('Coming soon'),
       ),
     );
   }

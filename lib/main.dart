@@ -14,12 +14,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final GoRouter _router = router;
+  late GoRouter _router;
+  @override
+  void initState() {
+    _router = router(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: router(context),
+      routerConfig: _router,
       debugShowCheckedModeBanner: false,
+      color: Colors.white,
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.grey[100], fontFamily: "Poppins"),
     );

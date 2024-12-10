@@ -9,6 +9,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 GoRouter router(BuildContext context) => GoRouter(
       initialLocation: '/',
+      navigatorKey: navigatorKey,
       routes: [
         ShellRoute(
             builder: (context, state, child) {
