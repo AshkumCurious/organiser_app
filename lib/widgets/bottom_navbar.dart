@@ -20,6 +20,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return PersistentTabView(
       context,
       controller: _controller,
+      confineToSafeArea: true,
       screens: _screens,
       decoration: NavBarDecoration(
         borderRadius: BorderRadius.circular(25),

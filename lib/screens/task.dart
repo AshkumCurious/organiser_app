@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
-import 'package:organiser_app/utils/constants.dart';
-import 'package:organiser_app/widgets/add_note_dialog.dart';
+import 'package:organiser_app/widgets/note_card.dart';
 
 import '../services/sql_service.dart';
 
@@ -27,6 +26,10 @@ class _TasksState extends State<Tasks> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notes'),
+        backgroundColor: ColorPallete.cardbgcolor,
+      ),
       floatingActionButton: Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height * 0.1),
@@ -37,51 +40,48 @@ class _TasksState extends State<Tasks> {
               size: 30,
             ),
             onPressed: () async {
-              // _databaseService.addNote(
-              //   categoryid: 1,
-              //   title: 'Task 1',
-              //   description: 'Description 1',
-              // );
-              showDialog(
-                  context: context,
-                  builder: (context) => AddNoteDialog(
-                        categories: categories,
-                        onAddNote: (p0, p1, p2) {},
-                      ));
+              _databaseService.addNote(
+                categoryid: 3,
+                title: 'Title 1',
+                description:
+                    'This is a new note that I have created for reference and this is how i can see it in the app',
+              );
             }),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: Column(
-            children: [
-              FutureBuilder(
-                future: _databaseService.getNotes(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data!.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        // Use snapshot.data[index] to access each category
-                        return ListTile(
-                          title: Text('Task $index'),
-                          subtitle: Text('Description $index'),
-                          leading: CircleAvatar(
-                            child: Text('$index'),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              )
-            ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                FutureBuilder(
+                  future: _databaseService.getNotes(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          // Use snapshot.data[index] to access each category
+                          return NotesCard(
+                            title: snapshot.data![index].title,
+                            description: snapshot.data![index].description,
+                            type: snapshot.data![index].categoryId,
+                            dateTime: snapshot.data![index].createdAt,
+                          );
+                        },
+                      );
+                    }
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),

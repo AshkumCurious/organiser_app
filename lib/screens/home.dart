@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:organiser_app/services/sql_service.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
 
+import '../utils/constants.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -11,104 +13,105 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final DatabaseService _databaseService = DatabaseService.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Image taking half the screen
-            Container(
-              height: MediaQuery.of(context).size.height * 0.40,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/organise.jpg'), // Replace with your image
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-
-            // Curved container slightly overlapping the image
-            Transform.translate(
-              offset: const Offset(
-                  0, -30), // Moves the container up to overlap the image
-              child: Container(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Image taking half the screen
+              Container(
+                height: MediaQuery.of(context).size.height * 0.40,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        'assets/images/organise.jpg'), // Replace with your image
+                    fit: BoxFit.cover,
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        // padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: ColorPallete.primary.withOpacity(0.2),
-                                  spreadRadius: 3,
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 2)
-                            ]),
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.task_rounded,
-                            color: ColorPallete.primary,
-                            size: 40,
+              ),
+
+              // Curved container slightly overlapping the image
+              Transform.translate(
+                offset: const Offset(
+                    0, -30), // Moves the container up to overlap the image
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          // padding: const EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color:
+                                        ColorPallete.primary.withOpacity(0.2),
+                                    spreadRadius: 3,
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 2)
+                              ]),
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.task_rounded,
+                              color: ColorPallete.primary,
+                              size: 40,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Hello User',
-                        style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      FutureBuilder(
-                        future: _databaseService.getAllCategories(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            return GridView.builder(
-                              padding: const EdgeInsets.all(0),
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount:
-                                    2, // number of items in each row
-                                mainAxisSpacing: 8.0, // spacing between rows
-                                crossAxisSpacing:
-                                    8.0, // spacing between columns
-                              ),
-                              itemCount: snapshot.data!.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                var item = snapshot.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 10.0),
-                                  child: Container(
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Hello User',
+                          style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        FutureBuilder(
+                          future: _databaseService.getAllCategories(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return GridView.builder(
+                                padding: const EdgeInsets.all(0),
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount:
+                                      2, // number of items in each row
+                                  mainAxisSpacing: 15, // spacing between rows
+                                  crossAxisSpacing:
+                                      15, // spacing between columns
+                                ),
+                                itemCount: snapshot.data!.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  var item = snapshot.data![index];
+                                  return Container(
                                     padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -142,8 +145,8 @@ class _HomeState extends State<Home> {
                                             shape: BoxShape.circle,
                                             color: ColorPallete.primary,
                                           ),
-                                          child: const Icon(
-                                            Icons.task_outlined,
+                                          child: Icon(
+                                            categoryIcons[index],
                                             color: Colors.white,
                                             size: 30,
                                           ),
@@ -157,20 +160,20 @@ class _HomeState extends State<Home> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

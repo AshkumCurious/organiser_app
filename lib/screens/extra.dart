@@ -11,8 +11,10 @@ class _ExtraState extends State<Extra> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Text('Coming soon'),
+      body: SafeArea(
+        child: Center(
+          child: Text('Coming soon'),
+        ),
       ),
     );
   }
