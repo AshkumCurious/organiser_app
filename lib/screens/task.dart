@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
 import 'package:organiser_app/widgets/note_card.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/note_provider.dart';
 import '../services/sql_service.dart';
 
 class Tasks extends StatefulWidget {
@@ -17,11 +19,9 @@ class _TasksState extends State<Tasks> {
 
   @override
   void initState() {
-    fetchCategories();
     super.initState();
   }
 
-  fetchCategories() async {}
   final DatabaseService _databaseService = DatabaseService.instance;
 
   @override
@@ -48,50 +48,38 @@ class _TasksState extends State<Tasks> {
             ),
             onPressed: () async {
               GoRouter.of(context).push('/tasks/addnote');
-              // _databaseService.addNote(
-              //   categoryid: 3,
-              //   title: 'Title 1',
-              //   description:
-              //       'This is a new note that I have created for reference and this is how i can see it in the app',
-              // );
             }),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                FutureBuilder(
-                  future: _databaseService.getNotes(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return ListView.builder(
+        child: Provider.of<NoteProvider>(context).isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data!.length,
+                        itemCount:
+                            Provider.of<NoteProvider>(context).notes.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           // Use snapshot.data[index] to access each category
+                          var note =
+                              Provider.of<NoteProvider>(context).notes[index];
                           return NotesCard(
-                            title: snapshot.data![index].title,
-                            description: snapshot.data![index].description,
-                            type: snapshot.data![index].categoryId,
-                            dateTime: snapshot.data![index].createdAt,
+                            title: note.title,
+                            description: note.description,
+                            type: note.categoryId,
+                            dateTime: note.createdAt,
                           );
                         },
-                      );
-                    }
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }

@@ -81,7 +81,7 @@ class NotesCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Icon(
-                            categoryIcons[type - 1],
+                            categoryIconsMap[type]['icon'],
                             color: Colors.white,
                           ),
                         ),

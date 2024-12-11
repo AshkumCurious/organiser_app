@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/note_model.dart';
+import '../utils/constants.dart';
 
 class DatabaseService {
   static Database? _db;
@@ -12,17 +13,6 @@ class DatabaseService {
 
   final String _notesTableName = "notes";
   final String _categoriesTableName = "categories";
-
-  List categories = [
-    "Health",
-    "Work",
-    "Personal",
-    "Study",
-    "Home",
-    "Financial",
-    "Favourites",
-    "Misceallaneous"
-  ];
 
   Future<Database> get database async {
     if (_db != null) return _db!;
@@ -74,7 +64,7 @@ class DatabaseService {
   Future<List<Category>> getAllCategories() async {
     final Database db = await database;
     final List<Map<String, dynamic>> categories =
-        await db.query(_categoriesTableName);
+        await db.query(_categoriesTableName, orderBy: 'taskCount DESC');
     return List.generate(categories.length, (index) {
       return Category(
         id: categories[index]['id'],
@@ -124,7 +114,8 @@ class DatabaseService {
 
   Future<List<Note>> getNotes() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> notes = await db.query(_notesTableName);
+    final List<Map<String, dynamic>> notes =
+        await db.query(_notesTableName, orderBy: 'updatedAt DESC');
     // print(notes);
     return List.generate(notes.length, (index) {
       return Note(

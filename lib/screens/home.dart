@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:organiser_app/services/sql_service.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/category_provider.dart';
 import '../utils/constants.dart';
 
 class Home extends StatefulWidget {
@@ -12,8 +14,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final DatabaseService _databaseService = DatabaseService.instance;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,85 +87,73 @@ class _HomeState extends State<Home> {
                         const SizedBox(
                           height: 30,
                         ),
-                        FutureBuilder(
-                          future: _databaseService.getAllCategories(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              return GridView.builder(
-                                padding: const EdgeInsets.all(0),
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount:
-                                      2, // number of items in each row
-                                  mainAxisSpacing: 15, // spacing between rows
-                                  crossAxisSpacing:
-                                      15, // spacing between columns
-                                ),
-                                itemCount: snapshot.data!.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  var item = snapshot.data![index];
-                                  return Container(
-                                    padding: const EdgeInsets.all(20),
+                        GridView.builder(
+                          padding: const EdgeInsets.all(0),
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // number of items in each row
+                            mainAxisSpacing: 15, // spacing between rows
+                            crossAxisSpacing: 15, // spacing between columns
+                          ),
+                          itemCount: Provider.of<CategoryProvider>(context)
+                              .categories
+                              .length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            var item = Provider.of<CategoryProvider>(context)
+                                .categories[index];
+                            return Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    item.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: ColorPallete.primary,
+                                    ),
+                                    child: Icon(
+                                      categoryIconsMap[item.id]['icon'],
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 2,
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 3),
-                                        ),
-                                      ],
+                                      size: 30,
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          item.name,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: ColorPallete.primary,
-                                          ),
-                                          child: Icon(
-                                            categoryIcons[index],
-                                            color: Colors.white,
-                                            size: 30,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Count: ${item.taskCount}',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: ColorPallete.primary,
-                                          ),
-                                        ),
-                                      ],
+                                  ),
+                                  Text(
+                                    'Count: ${item.taskCount}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: ColorPallete.primary,
                                     ),
-                                  );
-                                },
-                              );
-                            }
+                                  ),
+                                ],
+                              ),
+                            );
                           },
                         ),
                         const SizedBox(height: 20),

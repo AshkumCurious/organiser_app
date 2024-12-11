@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:organiser_app/provider/category_provider.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/note_provider.dart';
 import '../utils/constants.dart';
 
 class AddTask extends StatefulWidget {
@@ -13,7 +17,7 @@ class AddTask extends StatefulWidget {
 class _AddTaskState extends State<AddTask> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  String? _selectedCategory;
+  int? _selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +56,9 @@ class _AddTaskState extends State<AddTask> {
   Widget _buildTitleField() {
     return TextFormField(
       controller: _titleController,
+      keyboardType: TextInputType.text,
+      inputFormatters: [LengthLimitingTextInputFormatter(50)],
+      textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
         labelText: 'Title',
         labelStyle: TextStyle(color: ColorPallete.primary),
@@ -76,6 +83,10 @@ class _AddTaskState extends State<AddTask> {
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Title cannot be empty';
+        } else if (value.length < 3) {
+          return 'Title must be at least 3 characters';
+        } else if (value.length > 50) {
+          return 'Title must be at most 50 characters';
         }
         return null;
       },
@@ -87,6 +98,7 @@ class _AddTaskState extends State<AddTask> {
       controller: _contentController,
       maxLines: 6,
       textAlignVertical: TextAlignVertical.top,
+      textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
         alignLabelWithHint: true,
         labelText: 'Content',
@@ -125,7 +137,7 @@ class _AddTaskState extends State<AddTask> {
   }
 
   Widget _buildCategoryDropdown() {
-    return DropdownButtonFormField<String>(
+    return DropdownButtonFormField(
       value: _selectedCategory,
       decoration: InputDecoration(
         labelText: 'Category',
@@ -147,11 +159,11 @@ class _AddTaskState extends State<AddTask> {
           borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
-      items: categories.map((category) {
+      items: Provider.of<CategoryProvider>(context).categories.map((category) {
         return DropdownMenuItem(
-          value: category,
+          value: category.id,
           child: Text(
-            category,
+            category.name,
             style: TextStyle(color: ColorPallete.primary),
           ),
         );
@@ -195,6 +207,11 @@ class _AddTaskState extends State<AddTask> {
   void _submitTask() {
     if (_validateForm()) {
       Navigator.pop(context);
+      Provider.of<NoteProvider>(context, listen: false).addNote(
+        title: _titleController.text,
+        content: _contentController.text,
+        category: _selectedCategory!,
+      );
     }
   }
 

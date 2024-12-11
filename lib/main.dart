@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:organiser_app/provider/category_provider.dart';
 import 'package:organiser_app/services/gorouter.dart';
+import 'package:provider/provider.dart';
+
+import 'provider/note_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,12 +27,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      debugShowCheckedModeBanner: false,
-      color: Colors.white,
-      theme: ThemeData(
-          scaffoldBackgroundColor: Colors.grey[100], fontFamily: "Poppins"),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => NoteProvider()),
+        ChangeNotifierProvider(create: (context) => CategoryProvider()),
+      ],
+      child: MaterialApp.router(
+        routerConfig: _router,
+        debugShowCheckedModeBanner: false,
+        color: Colors.white,
+        theme: ThemeData(
+            scaffoldBackgroundColor: Colors.grey[100], fontFamily: "Poppins"),
+      ),
     );
   }
 }
