@@ -65,7 +65,7 @@ class DatabaseService {
     final Database db = await database;
     final List<Map<String, dynamic>> categories =
         await db.query(_categoriesTableName, orderBy: 'taskCount DESC');
-    print(categories);
+    // print(categories);
     return List.generate(categories.length, (index) {
       return Category(
         id: categories[index]['id'],

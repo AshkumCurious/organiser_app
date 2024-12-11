@@ -28,7 +28,6 @@ class _AddTaskState extends State<AddTask> {
         _contentController.text = widget.taskdata['description'];
         _selectedCategory = widget.taskdata['categoryId'];
       });
-      print(_selectedCategory);
     }
     super.initState();
   }
