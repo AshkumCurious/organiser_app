@@ -65,6 +65,7 @@ class DatabaseService {
     final Database db = await database;
     final List<Map<String, dynamic>> categories =
         await db.query(_categoriesTableName, orderBy: 'taskCount DESC');
+    print(categories);
     return List.generate(categories.length, (index) {
       return Category(
         id: categories[index]['id'],
@@ -74,19 +75,7 @@ class DatabaseService {
     });
   }
 
-  Future<void> incrementTaskCount(int categoryId) async {
-    final Database db = await database;
-    await db.rawUpdate(
-      '''
-    UPDATE $_categoriesTableName
-    SET taskCount = taskCount + 1
-    WHERE id = ?
-    ''',
-      [categoryId],
-    );
-  }
-
-  void addNote({
+  Future<void> addNote({
     required int categoryid,
     required String title,
     required String description,
@@ -102,6 +91,41 @@ class DatabaseService {
         'updatedAt': DateTime.now().toIso8601String(),
       },
     );
+    await db.rawUpdate(
+      '''
+    UPDATE $_categoriesTableName
+    SET taskCount = taskCount + 1
+    WHERE id = ?
+    ''',
+      [categoryid],
+    );
+  }
+
+  Future<void> updateNote({
+    required int id,
+    required int oldCategoryId,
+    required int categoryid,
+    required String title,
+    required String description,
+  }) async {
+    final Database db = await database;
+    await db.update(
+      _notesTableName,
+      {
+        'categoryId': categoryid,
+        'title': title,
+        'description': description,
+        'updatedAt': DateTime.now().toIso8601String(),
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    await db.rawUpdate('''
+    UPDATE $_categoriesTableName 
+    SET taskCount = taskCount - 1
+    WHERE id = ?
+    ''', [oldCategoryId]);
+
     await db.rawUpdate(
       '''
     UPDATE $_categoriesTableName

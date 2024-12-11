@@ -18,7 +18,7 @@ class NoteProvider extends ChangeNotifier {
     fetchNotes();
   }
 
-  void fetchNotes() async {
+  Future<void> fetchNotes() async {
     _isLoading = true;
     await _databaseService.getNotes().then((value) {
       _notes = value;
@@ -27,18 +27,39 @@ class NoteProvider extends ChangeNotifier {
     });
   }
 
-  void addNote({
+  Future<void> addNote({
     required String title,
     required String content,
     required int category,
   }) async {
-    _databaseService.addNote(
+    await _databaseService.addNote(
       categoryid: category,
       title: title,
       description: content,
     );
-    fetchNotes();
-    Provider.of<CategoryProvider>(navigatorKey.currentContext!, listen: false)
+    await fetchNotes();
+    await Provider.of<CategoryProvider>(navigatorKey.currentContext!,
+            listen: false)
+        .fetchCategories();
+  }
+
+  Future<void> updateNote({
+    required int id,
+    required String title,
+    required String content,
+    required int category,
+    required int oldCaategoryId,
+  }) async {
+    await _databaseService.updateNote(
+      id: id,
+      categoryid: category,
+      oldCategoryId: oldCaategoryId,
+      title: title,
+      description: content,
+    );
+    await fetchNotes();
+    await Provider.of<CategoryProvider>(navigatorKey.currentContext!,
+            listen: false)
         .fetchCategories();
   }
 }

@@ -12,10 +12,11 @@ class CategoryProvider extends ChangeNotifier {
     fetchCategories();
   }
 
-  void fetchCategories() {
-    _databaseService.getAllCategories().then((value) {
+  Future<void> fetchCategories() async {
+    await _databaseService.getAllCategories().then((value) {
       _categories = value;
       notifyListeners();
     });
+    notifyListeners();
   }
 }

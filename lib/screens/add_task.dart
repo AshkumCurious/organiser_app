@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:organiser_app/models/note_model.dart';
 import 'package:organiser_app/provider/category_provider.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/note_provider.dart';
-import '../utils/constants.dart';
 
 class AddTask extends StatefulWidget {
-  const AddTask({super.key});
-
+  const AddTask({super.key, required this.taskdata});
+  final Map taskdata;
   @override
   State<AddTask> createState() => _AddTaskState();
 }
@@ -20,13 +20,27 @@ class _AddTaskState extends State<AddTask> {
   int? _selectedCategory;
 
   @override
+  void initState() {
+    if (widget.taskdata.isNotEmpty) {
+      print(widget.taskdata);
+      setState(() {
+        _titleController.text = widget.taskdata['title'];
+        _contentController.text = widget.taskdata['description'];
+        _selectedCategory = widget.taskdata['categoryId'];
+      });
+      print(_selectedCategory);
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: ColorPallete.cardbgcolor,
-        title: const Text(
-          'Add New Note',
+        title: Text(
+          (widget.taskdata.isEmpty) ? 'Add New Note' : 'Edit Note',
         ),
         centerTitle: true,
         elevation: 0,
@@ -96,7 +110,7 @@ class _AddTaskState extends State<AddTask> {
   Widget _buildContentField() {
     return TextFormField(
       controller: _contentController,
-      maxLines: 6,
+      maxLines: 15,
       textAlignVertical: TextAlignVertical.top,
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
@@ -106,7 +120,7 @@ class _AddTaskState extends State<AddTask> {
         hintText: 'Write your note here...',
         hintStyle: const TextStyle(color: Colors.grey),
         prefixIcon: Padding(
-          padding: const EdgeInsets.only(bottom: 100),
+          padding: const EdgeInsets.only(bottom: 280),
           child: Icon(Icons.notes, color: ColorPallete.primary),
         ),
         // contentPadding:
@@ -193,9 +207,9 @@ class _AddTaskState extends State<AddTask> {
         ),
         elevation: 5,
       ),
-      child: const Text(
-        'Add Note',
-        style: TextStyle(
+      child: Text(
+        (widget.taskdata.isEmpty) ? 'Add Note' : 'Edit Note',
+        style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -207,11 +221,21 @@ class _AddTaskState extends State<AddTask> {
   void _submitTask() {
     if (_validateForm()) {
       Navigator.pop(context);
-      Provider.of<NoteProvider>(context, listen: false).addNote(
-        title: _titleController.text,
-        content: _contentController.text,
-        category: _selectedCategory!,
-      );
+      if (widget.taskdata.isNotEmpty) {
+        Provider.of<NoteProvider>(context, listen: false).updateNote(
+          id: widget.taskdata['id'],
+          title: _titleController.text,
+          content: _contentController.text,
+          category: _selectedCategory!,
+          oldCaategoryId: widget.taskdata['categoryId'],
+        );
+      } else {
+        Provider.of<NoteProvider>(context, listen: false).addNote(
+          title: _titleController.text,
+          content: _contentController.text,
+          category: _selectedCategory!,
+        );
+      }
     }
   }
 

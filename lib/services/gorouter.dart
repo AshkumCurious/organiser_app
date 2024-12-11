@@ -25,7 +25,17 @@ GoRouter router(BuildContext context) => GoRouter(
                     GoRoute(
                       parentNavigatorKey: navigatorKey,
                       path: 'addnote',
-                      builder: (context, state) => const AddTask(),
+                      builder: (context, state) {
+                        if (state.extra == null) {
+                          return const AddTask(
+                            taskdata: {},
+                          );
+                        }
+                        Map taskdata = state.extra as Map;
+                        return AddTask(
+                          taskdata: taskdata,
+                        );
+                      },
                     ),
                   ]),
               GoRoute(

@@ -68,11 +68,17 @@ class _TasksState extends State<Tasks> {
                           // Use snapshot.data[index] to access each category
                           var note =
                               Provider.of<NoteProvider>(context).notes[index];
-                          return NotesCard(
-                            title: note.title,
-                            description: note.description,
-                            type: note.categoryId,
-                            dateTime: note.createdAt,
+                          return InkWell(
+                            onTap: () {
+                              GoRouter.of(context)
+                                  .push('/tasks/addnote', extra: note.toMap());
+                            },
+                            child: NotesCard(
+                              title: note.title,
+                              description: note.description,
+                              type: note.categoryId,
+                              dateTime: note.updatedAt,
+                            ),
                           );
                         },
                       ),
