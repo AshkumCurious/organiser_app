@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:organiser_app/services/sql_service.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
 import 'package:provider/provider.dart';
-
 import '../provider/category_provider.dart';
 import '../utils/constants.dart';
 
