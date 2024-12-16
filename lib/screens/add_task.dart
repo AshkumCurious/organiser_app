@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:organiser_app/models/note_model.dart';
 import 'package:organiser_app/provider/category_provider.dart';
 import 'package:organiser_app/theme/color_pallete.dart';
 import 'package:provider/provider.dart';
-
 import '../provider/note_provider.dart';
 
 class AddTask extends StatefulWidget {
@@ -58,6 +56,12 @@ class _AddTaskState extends State<AddTask> {
                 _buildCategoryDropdown(),
                 const SizedBox(height: 30),
                 _buildAddButton(context),
+                const SizedBox(
+                  height: 20,
+                ),
+                (widget.taskdata.isNotEmpty)
+                    ? _buildDeleteButton(context)
+                    : const SizedBox.shrink()
               ],
             ),
           ),
@@ -217,6 +221,29 @@ class _AddTaskState extends State<AddTask> {
     );
   }
 
+  Widget _buildDeleteButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: _deleteTask,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: ColorPallete.primary.withOpacity(0.7)),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 5,
+      ),
+      child: Text(
+        'Delete Note',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: ColorPallete.primary,
+        ),
+      ),
+    );
+  }
+
   void _submitTask() {
     if (_validateForm()) {
       Navigator.pop(context);
@@ -235,6 +262,16 @@ class _AddTaskState extends State<AddTask> {
           category: _selectedCategory!,
         );
       }
+    }
+  }
+
+  void _deleteTask() {
+    if (widget.taskdata.isNotEmpty) {
+      Navigator.pop(context);
+      Provider.of<NoteProvider>(context, listen: false).deleteNote(
+        id: widget.taskdata['id'],
+        categoryId: widget.taskdata['categoryId'],
+      );
     }
   }
 

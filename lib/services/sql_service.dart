@@ -152,4 +152,25 @@ class DatabaseService {
       );
     });
   }
+
+  Future<void> deleteNote({
+    required int id,
+    required int categoryId,
+  }) async {
+    final Database db = await database;
+    await db.delete(
+      _notesTableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    await db.rawUpdate(
+      '''
+    UPDATE $_categoriesTableName
+    SET taskCount = taskCount - 1
+    WHERE id = ?
+    ''',
+      [categoryId],
+    );
+  }
 }
