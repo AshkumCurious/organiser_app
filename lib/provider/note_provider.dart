@@ -43,6 +43,20 @@ class NoteProvider extends ChangeNotifier {
         .fetchCategories();
   }
 
+  Future<void> deleteNote({
+    required int id,
+    required int categoryId,
+  }) async {
+    await _databaseService.deleteNote(
+      categoryId: categoryId,
+      id: id,
+    );
+    await fetchNotes();
+    await Provider.of<CategoryProvider>(navigatorKey.currentContext!,
+            listen: false)
+        .fetchCategories();
+  }
+
   Future<void> updateNote({
     required int id,
     required String title,
